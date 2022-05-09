@@ -19,7 +19,7 @@ func Run(ctx context.Context, s *http.Server, timeout time.Duration) error {
 
 // RunTLS is like Run but calls ListenAndServeTLS instead.
 func RunTLS(ctx context.Context, s *http.Server, timeout time.Duration, certFile, keyFile string) error {
-	serverErr := make(chan error)
+	serverErr := make(chan error, 1)
 	go func() {
 		// Capture ListenAndServe errors such as "port already in use".
 		// However, when a server is gracefully shutdown, it is safe to ignore errors
