@@ -21,6 +21,10 @@ func Run(ctx context.Context, s *http.Server, timeout time.Duration) error {
 func RunTLS(ctx context.Context, s *http.Server, timeout time.Duration, certFile, keyFile string) error {
 	serverErr := make(chan error)
 	go func() {
+		// Capture ListenAndServe errors such as "port already in use".
+		// However, when a server is gracefully shutdown, it is safe to ignore errors
+		// returned from this method (given the select logic below), because
+		// Shutdown causes ListenAndServe to always return http.ErrServerClosed.
 		if certFile != "" && keyFile != "" {
 			serverErr <- s.ListenAndServeTLS(certFile, keyFile)
 		} else {
